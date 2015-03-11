@@ -2,11 +2,13 @@ package org.kaerdan.twolevelexpandablerecyclerview;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Extends this class and it's abstract methods to get and adapter for expandable recycler view.
  */
 public abstract class TwoLevelExpandableAdapter<T extends TwoLevelExpandableAdapter.DataSet>
         extends RecyclerView.Adapter<ViewHolderWithSetter>  {
@@ -18,6 +20,10 @@ public abstract class TwoLevelExpandableAdapter<T extends TwoLevelExpandableAdap
     private List<DataHolder> dataList;
     private List<Boolean> isOpen;
 
+    /**
+     * Return adapter with collapsed content;
+     * @param data List of items for Adapter to work with;
+     */
     protected TwoLevelExpandableAdapter(List<T> data) {
         fullData = data;
         dataList = new ArrayList<>();
@@ -28,6 +34,12 @@ public abstract class TwoLevelExpandableAdapter<T extends TwoLevelExpandableAdap
         }
     }
 
+    /**
+     * Return adapter whose items will be expanded according to state
+     * @param data List of items for Adapter to work with;
+     * @param state List of state of items, if true it will be expanded otherwise collapsed.
+     *              MUST BE SAME LENGTH AS data!
+     */
     protected TwoLevelExpandableAdapter(List<T> data, List<Boolean> state) {
         fullData = data;
         dataList = new ArrayList<>();
@@ -42,6 +54,28 @@ public abstract class TwoLevelExpandableAdapter<T extends TwoLevelExpandableAdap
             }
         }
     }
+
+    @Override
+    public ViewHolderWithSetter onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == ITEM_TYPE) {
+            return getSecondLevelViewHolder(parent);
+        }
+        return getTopLevelViewHolder(parent);
+    }
+
+    /**
+     * This method should return ViewHolder whose view will be on the bottom of two level hierarchy.
+     * @param parent ViewGroup to inflate ViewHolder view with
+     * @return Second Level ViewHolder
+     */
+    public abstract ViewHolderWithSetter getSecondLevelViewHolder(ViewGroup parent);
+
+    /**
+     * This method should return ViewHolder whose view will be on the top of two level hierarchy.
+     * @param parent ViewGroup to inflate ViewHolder view with
+     * @return Top Level ViewHolder
+     */
+    public abstract ViewHolderWithSetter getTopLevelViewHolder(ViewGroup parent);
 
     @Override
     public void onBindViewHolder(ViewHolderWithSetter holder, final int position) {
@@ -70,7 +104,11 @@ public abstract class TwoLevelExpandableAdapter<T extends TwoLevelExpandableAdap
         return dataList.size();
     }
 
-    public List<Boolean> getOpenState() {
+    /**
+     * Returns current state of adapter.
+     * @return current state of adapter
+     */
+    public List<Boolean> getExpandState() {
         return isOpen;
     }
 
@@ -102,13 +140,27 @@ public abstract class TwoLevelExpandableAdapter<T extends TwoLevelExpandableAdap
         isOpen.set(headerPosition, !isOpen.get(headerPosition));
     }
 
-    protected enum ItemType {
-        HEADER, ITEM;
+    /**
+     * Inteface of data passing to the adapter;
+     * @param <K> type of data to be displayed in top level view
+     * @param <L> type of date to be displayed in second level view
+     */
+    public interface DataSet<K, L> {
+        /**
+         * Returns data to be displayed in top level view
+         * @return data to be displayed in top level view
+         */
+        K getData();
+
+        /**
+         * Returns data to be displayed in second level views
+         * @return data to be displayed in second level views
+         */
+        List<L> getChildren();
     }
 
-    public interface DataSet<K, L> {
-        K getData();
-        List<L> getChildren();
+    protected enum ItemType {
+        HEADER, ITEM;
     }
 
     private class DataHolder<K> {
