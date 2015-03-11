@@ -1,4 +1,4 @@
-package org.kaerdan.twolevelexandablerecyclerview;
+package org.kaerdan.twolevelexpandablerecyclerview;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

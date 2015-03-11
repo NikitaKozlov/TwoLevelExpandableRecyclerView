@@ -1,1 +1,1 @@
-include ':TwoLevelExpandableRecyclerView'
+include ':TwoLevelExpandableRecyclerView', ':twolevelexpandablerecyclerview.example'
