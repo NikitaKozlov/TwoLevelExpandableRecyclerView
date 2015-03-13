@@ -6,3 +6,4 @@
 /build
 *.iml
 .idea
+upload_to_maven.gradle
