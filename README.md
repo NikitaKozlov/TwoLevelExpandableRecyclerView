@@ -15,3 +15,7 @@ Also you need to provide *ViewHolders* for top and second level of list hierarch
     dependencies {
         compile 'org.kaerdan:twolevelexpandablerecyclerview:1.0'
     }
+
+### License
+
+The Apache Software License, Version 2.0
